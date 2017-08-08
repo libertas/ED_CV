@@ -1,0 +1,3 @@
+[submodule "simcom"]
+	path = simcom
+	url = git://github.com/libertas/simcom.git

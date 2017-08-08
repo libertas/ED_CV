@@ -1,5 +1,8 @@
 #include <opencv2/opencv.hpp>
 
+#include <SimCom.h>
+#include <ServiceLayer.h>
+
 using namespace cv;
 using namespace std;
 
