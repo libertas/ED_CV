@@ -3,6 +3,9 @@
 #include <SimCom.h>
 #include <ServiceLayer.h>
 
+#include "imageProcessing.h"
+
+
 using namespace cv;
 using namespace std;
 

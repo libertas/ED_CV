@@ -6,7 +6,7 @@ add_subdirectory(simcom)
 include_directories(${PROJECT_SOURCE_DIR}/ ${PROJECT_SOURCE_DIR}/simcom)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cpp imageProcessing.cpp)
 
 find_package(OpenCV REQUIRED)
 
