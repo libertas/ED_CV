@@ -79,6 +79,7 @@ void frameProcessorTask()
 			fps = fps_count;
 			fps_count = 0;
 			lasttime = thistime;
+			cout << "fps:" << fps << endl;
 		}
 		
 		Mat frame1;
@@ -99,7 +100,6 @@ void frameProcessorTask()
 		
 		
 		/* Use the processed data */
-		cout << "fps:" << fps << endl;
 		
 		camFrameDisplayLock.lock();
 		
