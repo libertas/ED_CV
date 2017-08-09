@@ -88,12 +88,12 @@ void frameProcessorTask()
 		
 		triThreshold(frame, frame1, highs, lows);
 		
-		Point pos;
-		centerOfMass(frame1, pos);
+		Point center;
+		centerOfMass(frame1, center);
 		
 		char msg[4];
-		((uint16_t*)msg)[0] = pos.x;
-		((uint16_t*)msg)[1] = pos.y;
+		((uint16_t*)msg)[0] = center.x;
+		((uint16_t*)msg)[1] = center.y;
 		sl_send(5, 5, msg, 4);
 		
 		
@@ -104,7 +104,9 @@ void frameProcessorTask()
 		camFrameDisplayLock.lock();
 		
 		camFrameDisplayCount = 1;
-		camFrameDisplay = frame1;
+		camFrameDisplay = frame;
+		
+		circle(camFrameDisplay, center, 10, CV_RGB(0,255,255), 5, 5, 1);
 		
 		camFrameDisplayLock.unlock();
 	}
