@@ -89,13 +89,14 @@ void frameProcessorTask()
 		uint8_t highs[3] = {100, 100, 255};
 		uint8_t lows[3] = {0, 0, 120};
 		
-		GaussianBlur(frame1, frame1, Size(5, 5), 5);
+		
 		triThreshold(frame, frame1, highs, lows);
+		GaussianBlur(frame1, frame1, Size(5, 5), 5);
 		
 		
 		vector<Vec3f> circles;
 
-		HoughCircles(frame1, circles, CV_HOUGH_GRADIENT, 1, frame1.rows/12, 150, 50, 0, 0 );
+		HoughCircles(frame1, circles, CV_HOUGH_GRADIENT, 1, frame1.rows/12, 150, 30, 0, 0 );
 		
 		for( size_t i = 0; i < circles.size(); i++ )
 		{
