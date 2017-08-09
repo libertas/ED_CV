@@ -46,8 +46,10 @@ void frameProcessorTask()
 {
 	Mat frame;
 	
-	uint8_t fps_count = 0;
-	uint8_t fps = 0;
+	uint32_t fps_count = 0;
+	uint32_t fps = 0;
+	
+	auto lasttime = std::chrono::system_clock::now();
 	
 	while(tasksRunning)
 	{
@@ -69,9 +71,18 @@ void frameProcessorTask()
 		
 		/* Process the frame */
 		fps_count++;
+		auto thistime = std::chrono::system_clock::now();
+		auto difftime = thistime - lasttime;
+		if(difftime > std::chrono::duration<int>(1)) {
+			fps = fps_count;
+			fps_count = 0;
+			lasttime = thistime;
+		}
 		
 		
 		/* Use the processed data */
+		cout << "fps:" << fps << endl;
+		
 		camFrameDisplayLock.lock();
 		
 		camFrameDisplayCount = 1;
