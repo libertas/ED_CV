@@ -13,8 +13,12 @@ using namespace std;
 
 Mat camFrame;
 uint8_t camFrameCount = 0;
-uint8_t camFrameDisplayCount = 0;
 mutex camFrameLock;
+
+Mat camFrameDisplay;
+uint8_t camFrameDisplayCount = 0;
+mutex camFrameDisplayLock;
+
 
 VideoCapture inputVideo(0);
 
@@ -33,7 +37,6 @@ void frameProducerTask()
 		camFrame = frame;
 		
 		camFrameCount = 1;
-		camFrameDisplayCount = 1;
 		
 		camFrameLock.unlock();
 	}
@@ -42,6 +45,9 @@ void frameProducerTask()
 void frameProcessorTask()
 {
 	Mat frame;
+	
+	uint8_t fps_count = 0;
+	uint8_t fps = 0;
 	
 	while(tasksRunning)
 	{
@@ -60,6 +66,18 @@ void frameProcessorTask()
 		frame = camFrame;
 		
 		camFrameLock.unlock();
+		
+		/* Process the frame */
+		fps_count++;
+		
+		
+		/* Use the processed data */
+		camFrameDisplayLock.lock();
+		
+		camFrameDisplayCount = 1;
+		camFrameDisplay = frame;
+		
+		camFrameDisplayLock.unlock();
 	}
 }
 
@@ -69,14 +87,14 @@ void displayTask()
 	
 	while(tasksRunning)
 	{
-		camFrameLock.lock();
+		camFrameDisplayLock.lock();
 		
 		if(camFrameDisplayCount == 1) {
 			frame = camFrame;
 			
 			camFrameDisplayCount = 0;
 			
-			camFrameLock.unlock();
+			camFrameDisplayLock.unlock();
 			
 			imshow("frame", frame);
 			
@@ -84,7 +102,7 @@ void displayTask()
 		}
 		
 		
-		camFrameLock.unlock();
+		camFrameDisplayLock.unlock();
 		
 		char c = waitKey(1);
 		if(c == 27) {
