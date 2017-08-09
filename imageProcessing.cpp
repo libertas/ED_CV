@@ -8,8 +8,8 @@ int centerOfMass(cv::Mat src, cv::Point &center)
 {
 	assert(src.channels() == 1);
 	int count = 0;
-	double xsum = 0;
-	double ysum = 0;
+	float xsum = 0;
+	float ysum = 0;
 
 #pragma omp parallel for
 	for(int i = 0; i < src.rows; i++) {
