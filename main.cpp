@@ -107,7 +107,7 @@ void frameProcessorTask()
 		camFrameDisplayCount = 1;
 		camFrameDisplay = frame1;
 		
-		circle(camFrameDisplay, center, 10, CV_RGB(0,255,255), 5, 5, 1);
+		circle(camFrameDisplay, center, 10, CV_RGB(0,255,255), 8, 8, 0);
 		
 		camFrameDisplayLock.unlock();
 	}
