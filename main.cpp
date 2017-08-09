@@ -19,6 +19,8 @@ Mat camFrameDisplay;
 uint8_t camFrameDisplayCount = 0;
 mutex camFrameDisplayLock;
 
+bool motion_ack = false;
+
 
 VideoCapture inputVideo(0);
 
@@ -79,6 +81,22 @@ void frameProcessorTask()
 			lasttime = thistime;
 		}
 		
+		Mat frame1;
+		
+		uint8_t highs[3] = {255, 255, 255};
+		uint8_t lows[3] = {100, 100, 100};
+		
+		triThreshold(frame, frame1, highs, lows);
+		
+		Point pos;
+		centerOfMass(frame1, pos);
+		
+		char msg[4];
+		((uint16_t*)msg)[0] = pos.x;
+		((uint16_t*)msg)[1] = pos.y;
+		sl_send(5, 5, msg, 4);
+		
+		
 		
 		/* Use the processed data */
 		cout << "fps:" << fps << endl;
@@ -86,7 +104,7 @@ void frameProcessorTask()
 		camFrameDisplayLock.lock();
 		
 		camFrameDisplayCount = 1;
-		camFrameDisplay = frame;
+		camFrameDisplay = frame1;
 		
 		camFrameDisplayLock.unlock();
 	}
@@ -101,7 +119,7 @@ void displayTask()
 		camFrameDisplayLock.lock();
 		
 		if(camFrameDisplayCount == 1) {
-			frame = camFrame;
+			frame = camFrameDisplay;
 			
 			camFrameDisplayCount = 0;
 			
@@ -124,9 +142,36 @@ void displayTask()
 	}
 }
 
+void callback0(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
+{
+}
+
+void callback1(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
+{
+	cout << "data:\n" << data << endl;
+}
+
+void callback2(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
+{
+	cout << from << " " << to << " " << data << " " << length << endl;
+}
+
+void callback5(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
+{
+	if(length == 1) {
+		if(data[0] == 'A') {
+			motion_ack = true;
+		}
+	}
+}
+
 int main()
 {
-  Mat img;
+  simcom_init("/dev/ttyUSB0");
+  sl_config(0, callback0);
+  sl_config(1, callback1);
+  sl_config(2, callback2);
+  sl_config(5, callback5);
   
   thread producer(frameProducerTask);
   thread processor(frameProcessorTask);
@@ -135,6 +180,8 @@ int main()
   producer.join();
   processor.join();
   displayer.join();
+  
+  simcom_close();
 
   return 0;
 }
