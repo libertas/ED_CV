@@ -84,10 +84,11 @@ void frameProcessorTask()
 		
 		Mat frame1;
 		
-		uint8_t highs[3] = {255, 255, 255};
-		uint8_t lows[3] = {100, 100, 100};
+		uint8_t highs[3] = {255, 100, 100};
+		uint8_t lows[3] = {100, 0, 0};
 		
-		triThreshold(frame, frame1, highs, lows);
+		GaussianBlur(frame, frame1, Size(5, 5), 1.5);
+		triThreshold(frame1, frame1, highs, lows);
 		
 		Point center;
 		centerOfMass(frame1, center);
@@ -104,7 +105,7 @@ void frameProcessorTask()
 		camFrameDisplayLock.lock();
 		
 		camFrameDisplayCount = 1;
-		camFrameDisplay = frame;
+		camFrameDisplay = frame1;
 		
 		circle(camFrameDisplay, center, 10, CV_RGB(0,255,255), 5, 5, 1);
 		
