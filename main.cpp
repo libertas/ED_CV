@@ -71,6 +71,8 @@ void frameProcessorTask()
 		
 		camFrameLock.unlock();
 		
+		frame = imread("9red.jpg");
+		
 		/* Process the frame */
 		fps_count++;
 		auto thistime = std::chrono::system_clock::now();
@@ -84,10 +86,30 @@ void frameProcessorTask()
 		
 		Mat frame1;
 		
-		uint8_t highs[3] = {255, 255, 255};
-		uint8_t lows[3] = {100, 100, 100};
+		uint8_t highs[3] = {100, 100, 255};
+		uint8_t lows[3] = {0, 0, 120};
 		
+		GaussianBlur(frame1, frame1, Size(5, 5), 5);
 		triThreshold(frame, frame1, highs, lows);
+		
+		
+		vector<Vec3f> circles;
+
+		HoughCircles(frame1, circles, CV_HOUGH_GRADIENT, 1, frame1.rows/12, 150, 50, 0, 0 );
+		
+		for( size_t i = 0; i < circles.size(); i++ )
+		{
+			Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+			int radius = cvRound(circles[i][2]);
+			// circle center
+			circle(frame, center, 3, Scalar(0,255,0), -1, 8, 0 );
+			// circle outline
+			circle(frame, center, radius, Scalar(0,0,255), 3, 8, 0 );
+		 }
+		
+		
+		
+		/* Use the processed data */
 		
 		Point center;
 		centerOfMass(frame1, center);
@@ -97,16 +119,12 @@ void frameProcessorTask()
 		((uint16_t*)msg)[1] = center.y;
 		sl_send(5, 5, msg, 4);
 		
-		
-		
-		/* Use the processed data */
+		circle(frame, center, 10, CV_RGB(0,255,255), 5, 5, 1);
 		
 		camFrameDisplayLock.lock();
 		
 		camFrameDisplayCount = 1;
 		camFrameDisplay = frame;
-		
-		circle(camFrameDisplay, center, 10, CV_RGB(0,255,255), 5, 5, 1);
 		
 		camFrameDisplayLock.unlock();
 	}
