@@ -43,7 +43,7 @@ void keyControl(char c)
 	case 'R':
 		sendingPos = false;
 		
-		sl_send(5, 5, "R", 1);
+		sl_send(2, 5, "R", 1);
 		
 		break;
 	default:
