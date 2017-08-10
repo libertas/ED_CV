@@ -11,8 +11,8 @@ int centerOfMass(cv::Mat src, cv::Point &center)
 	uint32_t xsum = 0;
 	uint32_t ysum = 0;
 
-	#pragma omp parallel for num_threads(6)\
-		reduction(+:count) reduction(+:xsum) reduction(+:ysum)
+	//#pragma omp parallel for num_threads(4)\
+	//	reduction(+:count) reduction(+:xsum) reduction(+:ysum)
 	for(int i = 0; i < src.rows; i++) {
 		for(int j = 0; j < src.cols; j++) {
 			if(src.at<uchar>(i, j) != 0) {
@@ -39,7 +39,7 @@ bool triThreshold(cv::Mat src, cv::Mat &dst, uint8_t highs[3], uint8_t lows[3])
 	if(src.channels() == 3) {
 		Mat tmp(src.rows, src.cols, CV_8U, Scalar(0));
 
-		#pragma omp parallel for num_threads(6)
+		//#pragma omp parallel for num_threads(4)
 		for(int i = 0; i < src.rows; i++) {
 			for(int j = 0; j < src.cols; j++) {
 				uchar flag = 1;
@@ -51,7 +51,7 @@ bool triThreshold(cv::Mat src, cv::Mat &dst, uint8_t highs[3], uint8_t lows[3])
 					}
 				}
 
-				#pragma omp critical
+				//#pragma omp critical
 				{
 					tmp.at<uchar>(i, j) = flag * 255;
 				}
