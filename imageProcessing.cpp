@@ -38,8 +38,8 @@ int centerOfMass(cv::Mat src, cv::Point &center)
 		center.x = xsum / count;
 		center.y = ysum / count;
 	} else {
-		center.x = 320;
-		center.y = 240;
+		center.x = src.cols / 2;
+		center.y = src.rows / 2;
 	}
 	
 	return 0;
