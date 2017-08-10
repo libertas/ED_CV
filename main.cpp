@@ -89,7 +89,7 @@ void frameProcessorTask()
 		
 		pyrDown(frame, frame1, Size(frame.cols >> 1, frame.rows >> 1));
 		triThreshold(frame1, frame1, highs, lows);
-		GaussianBlur(frame1, frame1, Size(5, 5), 1.0);
+		GaussianBlur(frame1, frame1, Size(3, 3), 2.0);
 		
 		Point center;
 		centerOfMass(frame1, center);
