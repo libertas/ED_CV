@@ -87,11 +87,15 @@ void frameProcessorTask()
 		uint8_t highs[3] = {80, 80, 255};
 		uint8_t lows[3] = {0, 0, 100};
 		
-		GaussianBlur(frame, frame1, Size(5, 5), 1.5);
+		pyrDown(frame, frame1, Size(frame.cols >> 1, frame.rows >> 1));
+		GaussianBlur(frame1, frame1, Size(5, 5), 1.5);
 		triThreshold(frame1, frame1, highs, lows);
 		
 		Point center;
 		centerOfMass(frame1, center);
+		
+		center.x <<= 1;
+		center.y <<= 1;
 		
 		char msg[4];
 		((uint16_t*)msg)[0] = center.x;
