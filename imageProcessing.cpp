@@ -6,16 +6,27 @@ using namespace cv;
 
 int centerOfMass(cv::Mat src, cv::Point &center)
 {
-	assert(src.channels() == 1);
+	if(src.channels() != 1) {
+		return -1;
+	}
+	
 	uint32_t count = 0;
 	uint32_t xsum = 0;
 	uint32_t ysum = 0;
 
-	//#pragma omp parallel for num_threads(4)\
+
+    uchar* p;
+    uchar c;
+    
+    //#pragma omp parallel for num_threads(4)\
 	//	reduction(+:count) reduction(+:xsum) reduction(+:ysum)
-	for(int i = 0; i < src.rows; i++) {
-		for(int j = 0; j < src.cols; j++) {
-			if(src.at<uchar>(i, j) != 0) {
+    for(int i = 0; i < src.rows; ++i)
+    {
+        p = src.ptr<uchar>(i);
+        for(int j = 0; j < src.cols; ++j)
+        {
+            c = p[j];
+            if(c != 0) {
 				xsum += j;
 				ysum += i;
 				count++;
@@ -38,14 +49,21 @@ bool triThreshold(cv::Mat src, cv::Mat &dst, uint8_t highs[3], uint8_t lows[3])
 {
 	if(src.channels() == 3) {
 		Mat tmp(src.rows, src.cols, CV_8U, Scalar(0));
+		
+		uchar* p;
 
 		//#pragma omp parallel for num_threads(4)
 		for(int i = 0; i < src.rows; i++) {
+			p = src.ptr<uchar>(i);
+			
 			for(int j = 0; j < src.cols; j++) {
 				uchar flag = 1;
+				
 				for(int k = 0; k < 3; k++) {
-					if(src.at<Vec3b>(i, j)[k] > highs[k]\
-						|| src.at<Vec3b>(i, j)[k] < lows[k]) {
+					uchar c;
+					c = p[j * 3 + k];
+					
+					if(c > highs[k] || c < lows[k]) {
 							flag = 0;
 							break;
 					}
