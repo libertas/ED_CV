@@ -26,7 +26,7 @@ int centerOfMass(cv::Mat src, cv::Point &center)
         for(int j = 0; j < src.cols; ++j)
         {
             c = p[j];
-            if(c != 0) {
+            if(c > 127) {
 				xsum += j;
 				ysum += i;
 				count++;

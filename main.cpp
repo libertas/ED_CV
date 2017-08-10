@@ -88,8 +88,8 @@ void frameProcessorTask()
 		uint8_t lows[3] = {0, 0, 100};
 		
 		pyrDown(frame, frame1, Size(frame.cols >> 1, frame.rows >> 1));
-		GaussianBlur(frame1, frame1, Size(5, 5), 1.5);
 		triThreshold(frame1, frame1, highs, lows);
+		GaussianBlur(frame1, frame1, Size(5, 5), 1.0);
 		
 		Point center;
 		centerOfMass(frame1, center);
