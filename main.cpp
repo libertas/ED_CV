@@ -47,6 +47,7 @@ void keyControl(char c)
 		
 		break;
 	default:
+		sl_send(2, 5, &c, 1);
 		break;
 	}
 }
