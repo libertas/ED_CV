@@ -26,6 +26,31 @@ VideoCapture inputVideo(0);
 
 bool tasksRunning = true;
 
+bool sendingPos = false;
+
+void keyControl(char c)
+{
+	switch(c) {
+	case 27:
+		tasksRunning = false;
+		break;
+	case 'S':
+		sl_send(2, 5, "S", 1);
+		
+		sendingPos = true;
+		
+		break;
+	case 'R':
+		sendingPos = false;
+		
+		sl_send(5, 5, "R", 1);
+		
+		break;
+	default:
+		break;
+	}
+}
+
 void frameProducerTask()
 {
 	Mat frame;
@@ -97,11 +122,12 @@ void frameProcessorTask()
 		center.x <<= 1;
 		center.y <<= 1;
 		
-		char msg[4];
-		((uint16_t*)msg)[0] = center.x;
-		((uint16_t*)msg)[1] = center.y;
-		sl_send(5, 5, msg, 4);
-		
+		if(sendingPos) {
+			char msg[4];
+			((uint16_t*)msg)[0] = center.x;
+			((uint16_t*)msg)[1] = center.y;
+			sl_send(2, 5, msg, 4);
+		}
 		
 		
 		/* Use the processed data */
@@ -141,11 +167,7 @@ void displayTask()
 		camFrameDisplayLock.unlock();
 		
 		char c = waitKey(1);
-		if(c == 27) {
-			tasksRunning = false;
-
-			break;
-		}
+		keyControl(c);
 	}
 }
 
