@@ -22,7 +22,7 @@ mutex camFrameDisplayLock;
 bool motion_ack = false;
 
 
-VideoCapture inputVideo(0);
+VideoCapture inputVideo(1);
 
 bool tasksRunning = true;
 
@@ -109,8 +109,8 @@ void frameProcessorTask()
 		
 		Mat frame1;
 		
-		uint8_t highs[3] = {80, 80, 255};
-		uint8_t lows[3] = {0, 0, 100};
+		uint8_t highs[3] = {160, 160, 255};
+		uint8_t lows[3] = {0, 0, 200};
 		
 		pyrDown(frame, frame1, Size(frame.cols >> 1, frame.rows >> 1));
 		triThreshold(frame1, frame1, highs, lows);
