@@ -1,4 +1,5 @@
 #include <opencv2/opencv.hpp>
+#include <iostream>
 #include <mutex>
 #include <thread>
 
@@ -38,6 +39,12 @@ void keyControl(char c)
 		sl_send(2, 5, "S", 1);
 		
 		sendingPos = true;
+		
+		break;
+	case 's':
+		sl_send(2, 5, "s", 1);
+		
+		sendingPos = false;
 		
 		break;
 	case 'R':
@@ -174,6 +181,21 @@ void displayTask()
 
 void callback0(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
 {
+	uint16_t data16;
+	float dataf;
+	switch(length) {
+	case 2:
+		data16 = *((uint16_t*)data);
+		cout << data16 << endl;
+		break;
+	case 4:
+		dataf = *((float*)data);
+		cout << dataf << endl;
+		break;
+	default:
+		cout << "Received a message of length " << length << endl;
+		break;
+	}
 }
 
 void callback1(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
