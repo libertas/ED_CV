@@ -192,6 +192,17 @@ void callback0(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
 		dataf = *((float*)data);
 		cout << dataf << endl;
 		break;
+	case 12:
+		dataf = *((float*)data);
+		cout << dataf << '\t';
+		
+		dataf = *((float*)data + 1);
+		cout << dataf << '\t';
+		
+		dataf = *((float*)data + 2);
+		cout << dataf << endl;
+		
+		break;
 	default:
 		cout << "Received a message of length " << length << endl;
 		break;
