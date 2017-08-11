@@ -120,8 +120,8 @@ void frameProcessorTask()
 		uint8_t highs[3] = {160, 160, 255};
 		uint8_t lows[3] = {0, 0, 200};
 		
-		rectangle(frame, Point(0, 0), Point(100, 480), Scalar(0, 0, 0), -1, 8, 0);
-		rectangle(frame, Point(540, 0), Point(640, 480), Scalar(0, 0, 0), -1, 8, 0);
+		rectangle(frame, Point(0, 0), Point(80, 480), Scalar(0, 0, 0), -1, 8, 0);
+		rectangle(frame, Point(560, 0), Point(640, 480), Scalar(0, 0, 0), -1, 8, 0);
 		
 		pyrDown(frame, frame1, Size(frame.cols >> 1, frame.rows >> 1));
 		triThreshold(frame1, frame1, highs, lows);
