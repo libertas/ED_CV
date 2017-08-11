@@ -22,6 +22,8 @@ mutex camFrameDisplayLock;
 
 bool motion_ack = false;
 
+char key_ack = 0;
+
 
 VideoCapture inputVideo(1);
 
@@ -52,6 +54,25 @@ void keyControl(char c)
 		
 		sl_send(2, 5, "R", 1);
 		
+		break;
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+	case '0':
+		do {
+			key_ack = 0;
+			sl_send(5, 5, &c, 1);
+			std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		} while(key_ack != c && key_ack != ~c);
+		
+		key_ack = 0;
+	
 		break;
 	default:
 		sl_send(2, 5, &c, 1);
@@ -133,7 +154,7 @@ void frameProcessorTask()
 		center.x <<= 1;
 		center.y <<= 1;
 		
-		cout << "Center:" << center.x << " " << center.y << endl;
+		//cout << "Center:" << center.x << " " << center.y << endl;
 		
 		if(sendingPos) {
 			char msg[4];
@@ -227,9 +248,39 @@ void callback2(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
 void callback5(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
 {
 	if(length == 1) {
-		if(data[0] == 'A') {
+		switch(data[0]){
+		case 'A':
 			motion_ack = true;
 			cout<< "motion_ack received" << endl;
+			break;
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		case '0':
+			key_ack = data[0];
+			cout << "Ack Received:" << data[0] << endl;
+			break;
+		case ~'1':
+		case ~'2':
+		case ~'3':
+		case ~'4':
+		case ~'5':
+		case ~'6':
+		case ~'7':
+		case ~'8':
+		case ~'9':
+		case ~'0':
+			key_ack = data[0];
+			cout << "NAck Received:" << (char)~(data[0]) << endl;
+			break;
+		default:
+			break;
 		}
 	} else {
 		cout << "callback5 received an unknown msg" << endl;
