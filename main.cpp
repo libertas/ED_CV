@@ -120,6 +120,9 @@ void frameProcessorTask()
 		uint8_t highs[3] = {160, 160, 255};
 		uint8_t lows[3] = {0, 0, 200};
 		
+		rectangle(frame, Point(0, 0), Point(100, 480), Scalar(0, 0, 0), -1, 8, 0);
+		rectangle(frame, Point(540, 0), Point(640, 480), Scalar(0, 0, 0), -1, 8, 0);
+		
 		pyrDown(frame, frame1, Size(frame.cols >> 1, frame.rows >> 1));
 		triThreshold(frame1, frame1, highs, lows);
 		GaussianBlur(frame1, frame1, Size(3, 3), 2.0);
@@ -129,6 +132,8 @@ void frameProcessorTask()
 		
 		center.x <<= 1;
 		center.y <<= 1;
+		
+		cout << "Center:" << center.x << " " << center.y << endl;
 		
 		if(sendingPos) {
 			char msg[4];
@@ -224,8 +229,34 @@ void callback5(char from, char to, const char* data, SIMCOM_LENGTH_TYPE length)
 	if(length == 1) {
 		if(data[0] == 'A') {
 			motion_ack = true;
+			cout<< "motion_ack received" << endl;
 		}
+	} else {
+		cout << "callback5 received an unknown msg" << endl;
 	}
+}
+
+
+uint16_t holePos[9][2];
+
+void detectHoles()
+{
+	holePos[0][0] = 206; holePos[0][1] = 106;
+	holePos[1][0] = 342; holePos[1][1] = 106;
+	holePos[2][0] = 506; holePos[2][1] = 106;
+	
+	holePos[3][0] = 206; holePos[3][1] = 354;
+	holePos[4][0] = 342; holePos[4][1] = 354;
+	holePos[5][0] = 506; holePos[5][1] = 354;
+
+	holePos[6][0] = 206; holePos[6][1] = 446;
+	holePos[7][0] = 342; holePos[7][1] = 446;
+	holePos[8][0] = 506; holePos[8][1] = 446;
+	
+	do {
+		sl_send(5, 5, (char*)holePos, 36);
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	} while(motion_ack != true);
 }
 
 int main()
@@ -235,6 +266,8 @@ int main()
   sl_config(1, callback1);
   sl_config(2, callback2);
   sl_config(5, callback5);
+  
+  detectHoles();
   
   thread producer(frameProducerTask);
   thread processor(frameProcessorTask);
