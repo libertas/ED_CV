@@ -29,31 +29,13 @@ VideoCapture inputVideo(1);
 
 bool tasksRunning = true;
 
-bool sendingPos = false;
+bool sendingPos = true;
 
 void keyControl(char c)
 {
 	switch(c) {
 	case 27:
 		tasksRunning = false;
-		break;
-	case 'S':
-		sl_send(2, 5, "S", 1);
-		
-		sendingPos = true;
-		
-		break;
-	case 's':
-		sl_send(2, 5, "s", 1);
-		
-		sendingPos = false;
-		
-		break;
-	case 'R':
-		sendingPos = false;
-		
-		sl_send(2, 5, "R", 1);
-		
 		break;
 	case '1':
 	case '2':
