@@ -25,7 +25,7 @@ bool motion_ack = false;
 char key_ack = 0;
 
 
-VideoCapture inputVideo(1);
+VideoCapture inputVideo(0);
 
 bool tasksRunning = true;
 
@@ -33,6 +33,8 @@ bool sendingPos = true;
 
 void keyControl(char c)
 {
+	c &= 0x7f;
+	
 	switch(c) {
 	case 27:
 		tasksRunning = false;
@@ -136,7 +138,7 @@ void frameProcessorTask()
 		center.x <<= 1;
 		center.y <<= 1;
 		
-		cout << "Center:" << center.x << " " << center.y << endl;
+		//cout << "Center:" << center.x << " " << center.y << endl;
 		
 		if(sendingPos) {
 			char msg[4];
