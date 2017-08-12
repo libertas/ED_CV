@@ -300,7 +300,7 @@ int main()
   sl_config(2, callback2);
   sl_config(5, callback5);
   
-  detectHoles();
+  // detectHoles();
   
   thread producer(frameProducerTask);
   thread processor(frameProcessorTask);
