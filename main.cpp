@@ -136,7 +136,7 @@ void frameProcessorTask()
 		center.x <<= 1;
 		center.y <<= 1;
 		
-		//cout << "Center:" << center.x << " " << center.y << endl;
+		cout << "Center:" << center.x << " " << center.y << endl;
 		
 		if(sendingPos) {
 			char msg[4];
@@ -274,17 +274,17 @@ uint16_t holePos[9][2];
 
 void detectHoles()
 {
-	holePos[0][0] = 206; holePos[0][1] = 106;
-	holePos[1][0] = 342; holePos[1][1] = 106;
-	holePos[2][0] = 506; holePos[2][1] = 106;
+	holePos[0][0] = 172; holePos[0][1] = 94;
+	holePos[1][0] = 316; holePos[1][1] = 94;
+	holePos[2][0] = 466; holePos[2][1] = 94;
 	
-	holePos[3][0] = 206; holePos[3][1] = 354;
-	holePos[4][0] = 342; holePos[4][1] = 354;
-	holePos[5][0] = 506; holePos[5][1] = 354;
+	holePos[3][0] = 176; holePos[3][1] = 238;
+	holePos[4][0] = 316; holePos[4][1] = 238;
+	holePos[5][0] = 458; holePos[5][1] = 240;
 
-	holePos[6][0] = 206; holePos[6][1] = 446;
-	holePos[7][0] = 342; holePos[7][1] = 446;
-	holePos[8][0] = 506; holePos[8][1] = 446;
+	holePos[6][0] = 176; holePos[6][1] = 380;
+	holePos[7][0] = 318; holePos[7][1] = 382;
+	holePos[8][0] = 458; holePos[8][1] = 382;
 	
 	do {
 		sl_send(5, 5, (char*)holePos, 36);
